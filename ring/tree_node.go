@@ -211,19 +211,22 @@ func (node *TreeNode) ToString() string {
 }
 
 func list_nodes(root *TreeNode) []*TreeNode {
-	bfs_nodes := []*TreeNode{}
-	nodes := []*TreeNode{root}
+	bfs_nodes := []*TreeNode{root}
+	nodes := []*TreeNode{}
 	for {
-		if len(nodes) == 0 {
+		if len(bfs_nodes) == 0 {
 			break
 		}
-		for i := 0; i < len(nodes); i++ {
-			if nodes[i] == nil {
+		temp := []*TreeNode{}
+		for i := 0; i < len(bfs_nodes); i++ {
+			nodes = append(nodes, bfs_nodes[i])
+			if bfs_nodes[i] == nil {
 				continue
 			}
-			bfs_nodes = append(bfs_nodes, nodes[i].left)
-			bfs_nodes = append(bfs_nodes, nodes[i].right)
+			temp = append(temp, nodes[i].left)
+			temp = append(temp, nodes[i].right)
 		}
+		bfs_nodes = temp
 	}
-	return bfs_nodes
+	return nodes
 }
