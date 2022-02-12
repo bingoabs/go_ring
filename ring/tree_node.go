@@ -1,14 +1,16 @@
 package ring
 
-import "fmt"
+import (
+	"fmt"
+	"log"
+)
 
 // 平衡二叉树 AVL树具有以下性质
 // 它是一 棵空树或它的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树
 // 注意此处的高度是子树的最深深度，因此出现两个叶子节点差距超过一层是符合要求的
 
 type TreeNode struct {
-	node_name    string
-	val          int
+	val          uint32
 	left         *TreeNode
 	right        *TreeNode
 	left_height  int
@@ -27,56 +29,56 @@ type TreeNode struct {
 
 // 左旋转就是将左子节点提到根节点，而原先根节点成为右子节点
 
-func insert_node(root *TreeNode, node_name string, val int) *TreeNode {
+func insert_node(root *TreeNode, val uint32) *TreeNode {
 	if root == nil {
 		return &TreeNode{
-			node_name:    node_name,
 			val:          val,
 			left_height:  0,
 			right_height: 0,
 		}
 	}
 	if root.val < val {
-		root.left = insert_node(root.left, node_name, val)
+		root.left = insert_node(root.left, val)
 		root.left_height++
 	} else {
-		root.right = insert_node(root.right, node_name, val)
+		root.right = insert_node(root.right, val)
 		root.right_height++
 	}
 	root = rebalance(root)
 	return root
 }
 
-func search_node(root *TreeNode, node_name string, val int) *TreeNode {
+func search_first_bigger_node(root *TreeNode, val uint32) uint32 {
+	if root == nil {
+		log.Panic("tree node has not element, can not do find")
+	}
+	raw_root := root
 	for {
+		// val is bigger than any element in current tree, return the smallest value
 		if root == nil {
-			return nil
+			return get_left_smallest_node(raw_root).val
 		}
-		if root.val > val {
-			root = root.left
-		} else if root.val == val {
-			// 基本不可能出现相同的哈希值，因为节点数量不应该多到会产生hash冲突的程度
-			// if root.node_name != node_name {
-			// 	panic("Rarely error, the hash value for different nodes is same!")
-			// }
-			return root
-		} else {
+		if root.val < val {
 			root = root.right
+		} else if root.left == nil || root.left.val < val {
+			return root.val
+		} else {
+			root = root.left
 		}
 	}
 }
 
-func remove_node(root *TreeNode, node_name string, val int) *TreeNode {
+func remove_node(root *TreeNode, val uint32) *TreeNode {
 	if root == nil {
 		return nil
 	}
 	if root.val > val {
-		remove_node(root.left, node_name, val)
+		remove_node(root.left, val)
 		root = rebalance(root)
 	} else if root.val == val {
 		root = generate_root(root.left, root.right)
 	} else {
-		remove_node(root.right, node_name, val)
+		remove_node(root.right, val)
 		root = rebalance(root)
 	}
 	return root
@@ -105,7 +107,17 @@ func rebalance(root *TreeNode) *TreeNode {
 	}
 	return root
 }
-func get_smallest_node(node *TreeNode) *TreeNode {
+func get_left_smallest_node(node *TreeNode) *TreeNode {
+	for {
+		if node.left != nil {
+			node = node.left
+		} else {
+			return node
+		}
+	}
+}
+
+func get_right_smallest_node(node *TreeNode) *TreeNode {
 	for {
 		if node.right != nil {
 			node = node.right
@@ -116,14 +128,13 @@ func get_smallest_node(node *TreeNode) *TreeNode {
 }
 func generate_root(left *TreeNode, right *TreeNode) *TreeNode {
 	if left != nil && right != nil {
-		smallest_node_in_right := get_smallest_node(right)
+		smallest_node_in_right := get_right_smallest_node(right)
 		root := &TreeNode{
-			node_name:    smallest_node_in_right.node_name,
 			val:          smallest_node_in_right.val,
 			left_height:  0,
 			right_height: 0,
 		}
-		right = remove_node(right, root.node_name, root.val)
+		right = remove_node(right, root.val)
 		root.left = left
 		root.right = right
 		root = update_height(root)
@@ -174,29 +185,29 @@ func single_right_rotate(root *TreeNode) *TreeNode {
 	return new_root
 }
 
-func is_balance(root *TreeNode) bool {
-	return get_height(root) >= 0
-}
+// func is_balance(root *TreeNode) bool {
+// 	return get_height(root) >= 0
+// }
 
-// 如果子树平衡，返回子树高度，否则返回 -1
-func get_height(root *TreeNode) int {
-	if root == nil {
-		return 0
-	}
-	left_height := get_height(root.left)
-	right_height := get_height(root.right)
-	if left_height == -1 || right_height == -1 || Abs(left_height-right_height) > 1 {
-		return -1
-	}
-	return Max(left_height, right_height) + 1
-}
+// // 如果子树平衡，返回子树高度，否则返回 -1
+// func get_height(root *TreeNode) int {
+// 	if root == nil {
+// 		return 0
+// 	}
+// 	left_height := get_height(root.left)
+// 	right_height := get_height(root.right)
+// 	if left_height == -1 || right_height == -1 || Abs(left_height-right_height) > 1 {
+// 		return -1
+// 	}
+// 	return Max(left_height, right_height) + 1
+// }
 
 func (node *TreeNode) ToString() string {
 	if node == nil {
 		return "[nil]"
 	}
-	return fmt.Sprintf("[node_name => %v, val => %v, left_height: %v, right_height: %v]",
-		node.node_name, node.val, node.left_height, node.right_height)
+	return fmt.Sprintf("[val => %v, left_height: %v, right_height: %v]",
+		node.val, node.left_height, node.right_height)
 }
 
 func list_nodes(root *TreeNode) []*TreeNode {

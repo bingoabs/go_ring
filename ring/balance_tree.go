@@ -7,19 +7,17 @@ type BalanceTree struct {
 	root *TreeNode
 }
 
-func (tree *BalanceTree) Add(node_name string, val int) {
-	tree.root = insert_node(tree.root, node_name, val)
+func (tree *BalanceTree) Add(node uint32) {
+	tree.root = insert_node(tree.root, node)
 }
 
-func (tree *BalanceTree) Find(node_name string, val int) bool {
-	if search_node(tree.root, node_name, val) != nil {
-		return true
-	}
-	return false
+// find the next bigger node value
+func (tree *BalanceTree) Find(node uint32) uint32 {
+	return search_first_bigger_node(tree.root, node)
 }
 
-func (tree *BalanceTree) Remove(node_name string, val int) bool {
-	tree.root = remove_node(tree.root, node_name, val)
+func (tree *BalanceTree) Remove(node uint32) bool {
+	tree.root = remove_node(tree.root, node)
 	return true
 }
 
