@@ -23,6 +23,15 @@ func (tree *BalanceTree) Remove(node_name string, val int) bool {
 	return true
 }
 
-func (tree *BalanceTree) List() []string {
+func (tree *BalanceTree) List() []*TreeNode {
 	return list_nodes(tree.root)
+}
+
+func (tree *BalanceTree) Layout() []string {
+	str_nodes := []string{}
+	nodes := list_nodes(tree.root)
+	for i := 0; i < len(nodes); i++ {
+		str_nodes = append(str_nodes, nodes[i].ToString())
+	}
+	return str_nodes
 }

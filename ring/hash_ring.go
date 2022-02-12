@@ -4,3 +4,5 @@ type HashRing struct {
 	nodes []string
 	ring  *TreeNode
 }
+
+type 

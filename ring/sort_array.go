@@ -10,8 +10,22 @@ func (array *SortArray) Insert(val string) {
 	if len(array.nodes) == 0 {
 		array.nodes = append(array.nodes, val)
 	} else {
-
+		idx := find_first_bigger_value_idx(array.nodes, val)
+		nodes := array.nodes[0:idx]
+		nodes = append(nodes, val)
+		nodes = append(nodes, array.nodes[idx:]...)
+		array.nodes = nodes
 	}
+}
+
+func (array *SortArray) Remove(val string) bool {
+	for i := 0; i < len(array.nodes); i++ {
+		if array.nodes[i] == val {
+			array.nodes = append(array.nodes[:i], array.nodes[i+1:]...)
+			return true
+		}
+	}
+	return false
 }
 
 func find_first_bigger_value_idx(nodes []string, val string) int {

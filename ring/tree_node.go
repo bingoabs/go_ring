@@ -1,5 +1,7 @@
 package ring
 
+import "fmt"
+
 // 平衡二叉树 AVL树具有以下性质
 // 它是一 棵空树或它的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树
 // 注意此处的高度是子树的最深深度，因此出现两个叶子节点差距超过一层是符合要求的
@@ -189,15 +191,28 @@ func get_height(root *TreeNode) int {
 	return Max(left_height, right_height) + 1
 }
 
-func list_nodes(root *TreeNode) []string {
-	// TODO golang queue
-	queue
-	type TreeNode struct {
-		node_name    string
-		val          int
-		left         *TreeNode
-		right        *TreeNode
-		left_height  int
-		right_height int
+func (node *TreeNode) ToString() string {
+	if node == nil {
+		return "[nil]"
 	}
+	return fmt.Sprintf("[node_name => %v, val => %v, left_height: %v, right_height: %v]",
+		node.node_name, node.val, node.left_height, node.right_height)
+}
+
+func list_nodes(root *TreeNode) []*TreeNode {
+	bfs_nodes := []*TreeNode{}
+	nodes := []*TreeNode{root}
+	for {
+		if len(nodes) == 0 {
+			break
+		}
+		for i := 0; i < len(nodes); i++ {
+			if nodes[i] == nil {
+				continue
+			}
+			bfs_nodes = append(bfs_nodes, nodes[i].left)
+			bfs_nodes = append(bfs_nodes, nodes[i].right)
+		}
+	}
+	return bfs_nodes
 }
