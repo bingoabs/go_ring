@@ -1,4 +1,4 @@
-module go_ring
+module github.com/bingoabs/go_ring
 
 go 1.16
 
