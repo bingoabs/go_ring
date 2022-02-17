@@ -37,7 +37,7 @@ func insert_node(root *TreeNode, val uint32) *TreeNode {
 			right_height: 0,
 		}
 	}
-	if root.val < val {
+	if root.val > val {
 		root.left = insert_node(root.left, val)
 		root.left_height++
 	} else {
@@ -56,7 +56,7 @@ func search_first_bigger_node(root *TreeNode, val uint32) uint32 {
 	for {
 		// val is bigger than any element in current tree, return the smallest value
 		if root == nil {
-			return get_left_smallest_node(raw_root).val
+			return get_left_tree_smallest_node(raw_root).val
 		}
 		if root.val < val {
 			root = root.right
@@ -107,7 +107,7 @@ func rebalance(root *TreeNode) *TreeNode {
 	}
 	return root
 }
-func get_left_smallest_node(node *TreeNode) *TreeNode {
+func get_left_tree_smallest_node(node *TreeNode) *TreeNode {
 	for {
 		if node.left != nil {
 			node = node.left
@@ -117,10 +117,10 @@ func get_left_smallest_node(node *TreeNode) *TreeNode {
 	}
 }
 
-func get_right_smallest_node(node *TreeNode) *TreeNode {
+func get_smallest_node(node *TreeNode) *TreeNode {
 	for {
-		if node.right != nil {
-			node = node.right
+		if node.left != nil {
+			node = node.left
 		} else {
 			return node
 		}
@@ -128,7 +128,7 @@ func get_right_smallest_node(node *TreeNode) *TreeNode {
 }
 func generate_root(left *TreeNode, right *TreeNode) *TreeNode {
 	if left != nil && right != nil {
-		smallest_node_in_right := get_right_smallest_node(right)
+		smallest_node_in_right := get_smallest_node(right)
 		root := &TreeNode{
 			val:          smallest_node_in_right.val,
 			left_height:  0,
@@ -211,6 +211,7 @@ func (node *TreeNode) ToString() string {
 }
 
 func list_nodes(root *TreeNode) []*TreeNode {
+	log.Println("List nodes  start")
 	bfs_nodes := []*TreeNode{root}
 	nodes := []*TreeNode{}
 	for {
@@ -223,8 +224,8 @@ func list_nodes(root *TreeNode) []*TreeNode {
 			if bfs_nodes[i] == nil {
 				continue
 			}
-			temp = append(temp, nodes[i].left)
-			temp = append(temp, nodes[i].right)
+			temp = append(temp, bfs_nodes[i].left)
+			temp = append(temp, bfs_nodes[i].right)
 		}
 		bfs_nodes = temp
 	}
