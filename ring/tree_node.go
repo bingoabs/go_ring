@@ -3,6 +3,8 @@ package ring
 import (
 	"fmt"
 	"log"
+
+	STL "github.com/bingoabs/go_base/stl"
 )
 
 // 平衡二叉树 AVL树具有以下性质
@@ -52,19 +54,20 @@ func search_first_bigger_node(root *TreeNode, val uint32) uint32 {
 	if root == nil {
 		log.Panic("tree node has not element, can not do find")
 	}
-	raw_root := root
+	stk := STL.Stack{}
 	for {
-		// val is bigger than any element in current tree, return the smallest value
 		if root == nil {
-			return get_left_tree_smallest_node(raw_root).val
+			val, _ := stk.Top()
+			return val.(uint32)
 		}
-		if root.val < val {
-			root = root.right
-		} else if root.left == nil || root.left.val < val {
+		if root.val == val {
 			return root.val
+		} else if root.val < val {
+			root = root.right
 		} else {
 			root = root.left
 		}
+		stk.Push(root.val)
 	}
 }
 

@@ -1,0 +1,2 @@
+about go_base, must mod be the github.com/bingoabs/go_base 
+it means that the module name need match the package name!
