@@ -7,17 +7,10 @@ import (
 	STL "github.com/bingoabs/go_base/stl"
 )
 
+/*
 // 平衡二叉树 AVL树具有以下性质
 // 它是一 棵空树或它的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是一棵平衡二叉树
 // 注意此处的高度是子树的最深深度，因此出现两个叶子节点差距超过一层是符合要求的
-
-type TreeNode struct {
-	val          uint32
-	left         *TreeNode
-	right        *TreeNode
-	left_height  int
-	right_height int
-}
 
 // 旋转操作分为以下四种情况
 // 1）左左  2）左右  3）右左  4）右右
@@ -30,6 +23,16 @@ type TreeNode struct {
 // 即 *左*右*结构执行*右*左*旋转
 
 // 左旋转就是将左子节点提到根节点，而原先根节点成为右子节点
+
+*/
+
+type TreeNode struct {
+	val          uint32
+	left         *TreeNode
+	right        *TreeNode
+	left_height  int
+	right_height int
+}
 
 func insert_node(root *TreeNode, val uint32) *TreeNode {
 	if root == nil {
