@@ -10,18 +10,24 @@ type BalanceTree struct {
 }
 
 func (tree *BalanceTree) Add(node uint32) bool {
-	log.Println("Balance tree Add function start")
+	log.Println("Balance tree Add: ", node)
 	tree.root = insert_node(tree.root, node)
-	log.Println("Balance tree Add function end")
 	return true
 }
 
 // find the next bigger node value
 func (tree *BalanceTree) Find(node uint32) uint32 {
+	log.Println("Blance tree Find: ", node)
 	return search_first_bigger_node(tree.root, node)
 }
 
+func (tree *BalanceTree) Exists(node uint32) bool {
+	log.Println("Balance tree Exits: ", node)
+	return is_exists(tree.root, node)
+}
+
 func (tree *BalanceTree) Remove(node uint32) bool {
+	log.Println("Balance tree Remove: ", node)
 	tree.root = remove_node(tree.root, node)
 	return true
 }

@@ -54,6 +54,11 @@ func search_first_bigger_node(root *TreeNode, val uint32) uint32 {
 	if root == nil {
 		log.Panic("tree node has not element, can not do find")
 	}
+	max_node := get_maxest_node(root)
+	min_node := get_smallest_node(root)
+	if val > max_node.val {
+		return min_node.val
+	}
 	stk := STL.Stack{}
 	for {
 		if root == nil {
@@ -63,11 +68,30 @@ func search_first_bigger_node(root *TreeNode, val uint32) uint32 {
 		if root.val == val {
 			return root.val
 		} else if root.val < val {
+			stk.Push(root.val)
+			root = root.right
+		} else {
+			stk.Push(root.val)
+			root = root.left
+		}
+	}
+}
+
+func is_exists(root *TreeNode, val uint32) bool {
+	if root == nil {
+		log.Panic("tree node has not element, not exists")
+	}
+	for {
+		if root == nil {
+			return false
+		}
+		if root.val == val {
+			return true
+		} else if root.val < val {
 			root = root.right
 		} else {
 			root = root.left
 		}
-		stk.Push(root.val)
 	}
 }
 
@@ -76,12 +100,12 @@ func remove_node(root *TreeNode, val uint32) *TreeNode {
 		return nil
 	}
 	if root.val > val {
-		remove_node(root.left, val)
+		root.left = remove_node(root.left, val)
 		root = rebalance(root)
 	} else if root.val == val {
 		root = generate_root(root.left, root.right)
 	} else {
-		remove_node(root.right, val)
+		root.right = remove_node(root.right, val)
 		root = rebalance(root)
 	}
 	return root
@@ -110,16 +134,16 @@ func rebalance(root *TreeNode) *TreeNode {
 	}
 	return root
 }
-func get_left_tree_smallest_node(node *TreeNode) *TreeNode {
+
+func get_maxest_node(node *TreeNode) *TreeNode {
 	for {
-		if node.left != nil {
-			node = node.left
+		if node.right != nil {
+			node = node.right
 		} else {
 			return node
 		}
 	}
 }
-
 func get_smallest_node(node *TreeNode) *TreeNode {
 	for {
 		if node.left != nil {
